@@ -105,7 +105,7 @@ class KNearestNeighbor(object):
       #summation axis is crucial here, figure it out!
       
       dists[i,:] = np.sqrt((np.square(np.abs(self.X_train-X[i,:])).sum(axis=1)))
-     
+      #dists[i:] = np.sqrt((np.square(np.abs(self.X_train-X[i:])).sum(axis=1)))
       
       #######################################################################
       #                         END OF YOUR CODE                            #
