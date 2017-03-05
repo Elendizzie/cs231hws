@@ -122,7 +122,7 @@ def svm_loss_vectorized(W, X, y, reg):
   # loss.                                                                     #
   #############################################################################
   
-  #calculate gradient of the loss
+  #calculate gradient of the loss with respect of the correct labeled weight
     
   binary = threshold_matrix  #[10,500]
   binary[threshold_matrix>0] = 1 
