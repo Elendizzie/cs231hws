@@ -106,6 +106,8 @@ def softmax_loss_vectorized(W, X, y, reg):
   
   #compute gradient
   # dw_j = 1/num_train * sum[x_i * (p(y_i = j)-Ind{y_i = j} )]
+  # the gradient for all correct labeled position is original weight -1
+  # for incorrect labeled position is itself
   p = np.exp(scores)/np.sum(np.exp(scores),axis=0) #for every pics
   ind = np.zeros(p.shape)
   ind[y, range(num_train)] = 1 #the correct labeled positions are 1

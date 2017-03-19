@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+  
 
 class TwoLayerNet(object):
   """
@@ -15,8 +15,8 @@ class TwoLayerNet(object):
   input - fully connected layer - ReLU - fully connected layer - softmax
 
   The outputs of the second fully-connected layer are the scores for each class.
-  """
-
+  """  
+  
   def __init__(self, input_size, hidden_size, output_size, std=1e-4):
     """
     Initialize the model. Weights are initialized to small random values and
@@ -33,8 +33,8 @@ class TwoLayerNet(object):
     - hidden_size: The number of neurons H in the hidden layer.
     - output_size: The number of classes C.
     """
-    self.params = {}
-    self.params['W1'] = std * np.random.randn(input_size, hidden_size)
+    self.params = {}               
+    self.params['W1'] = std * np.random.randn(input_size, hidden_size)               
     self.params['b1'] = np.zeros(hidden_size)
     self.params['W2'] = std * np.random.randn(hidden_size, output_size)
     self.params['b2'] = np.zeros(output_size)
@@ -65,7 +65,7 @@ class TwoLayerNet(object):
     # Unpack variables from the params dictionary
     W1, b1 = self.params['W1'], self.params['b1']
     W2, b2 = self.params['W2'], self.params['b2']
-    N, D = X.shape
+    N, D = X.shape # in this case [5, 4]
 
     # Compute the forward pass
     scores = None
@@ -74,7 +74,9 @@ class TwoLayerNet(object):
     # Store the result in the scores variable, which should be an array of      #
     # shape (N, C).                                                             #
     #############################################################################
-    pass
+    h1 = np.dot(X,W1) + b1
+    a1 = np.maximum(0,h1)   ##relu
+    scores = np.dot(a1,W2) + b2
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -84,7 +86,7 @@ class TwoLayerNet(object):
       return scores
 
     # Compute the loss
-    loss = None
+    loss = 0.0
     #############################################################################
     # TODO: Finish the forward pass, and compute the loss. This should include  #
     # both the data loss and L2 regularization for W1 and W2. Store the result  #
@@ -92,7 +94,25 @@ class TwoLayerNet(object):
     # classifier loss. So that your results match ours, multiply the            #
     # regularization loss by 0.5                                                #
     #############################################################################
-    pass
+    
+    ##softmax layer 
+    # softmax loss is -sum(correct scores) + log(sum(e^[all scores (for each    #
+    # respective example)])) 
+
+    #rows = np.sum(np.exp(scores), axis=1)
+    #correct_scores = scores[range(N),y]
+    
+    #loss = np.sum(-correct_scores) + np.log(rows)
+    #loss /= N
+    #loss += 0.5 * reg * (np.sum(W1*W1) + np.sum(W2*W2))
+    #reg with reg loss 0.5
+    scores = scores - np.max(scores,axis=1).reshape(-1,1)
+    correct_scores = scores[range(N),y]
+    softmax=np.exp(scores)/np.sum(np.exp(scores),axis=1).reshape(-1,1)
+    loss = -np.sum(np.log(softmax[range(N),y]))
+    loss /= N
+    loss += 0.5 * reg * (np.sum(W1*W1) + np.sum(W2*W2))
+    
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -104,7 +124,25 @@ class TwoLayerNet(object):
     # and biases. Store the results in the grads dictionary. For example,       #
     # grads['W1'] should store the gradient on W1, and be a matrix of same size #
     #############################################################################
-    pass
+    
+   
+    #cal grad of softmax layer, the weight at the correct labeled postion -1
+    dsoftmax = softmax.copy()
+    dsoftmax[range(N),y]-=1
+    dsoftmax/=N
+    
+    #calc gradient W2 and b2
+    grads['W2'] = np.dot(dsoftmax.T,a1).T + reg*W2
+    grads['b2'] = np.sum(dsoftmax, axis=0)
+    
+
+    da1 = np.dot(dsoftmax,W2.T)
+    dRelu = (a1>0)*da1
+    
+    
+    grads['W1'] = np.dot(X.T,dRelu) + reg*W1
+    grads['b1'] = np.sum(dRelu, axis=0)
+    
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
