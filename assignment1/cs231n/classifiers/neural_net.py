@@ -170,8 +170,8 @@ class TwoLayerNet(object):
     - batch_size: Number of training examples to use per step.
     - verbose: boolean; if true print progress during optimization.
     """
-    num_train = X.shape[0]
-    iterations_per_epoch = max(num_train / batch_size, 1)
+    num_train = X.shape[0] #samples = 5 here 
+    iterations_per_epoch = max(num_train / batch_size, 1) # finished in 1 iteration
 
     # Use SGD to optimize the parameters in self.model
     loss_history = []
@@ -179,14 +179,21 @@ class TwoLayerNet(object):
     val_acc_history = []
 
     for it in xrange(num_iters):
-      X_batch = None
-      y_batch = None
+      
 
       #########################################################################
       # TODO: Create a random minibatch of training data and labels, storing  #
       # them in X_batch and y_batch respectively.                             #
       #########################################################################
-      pass
+      
+      #random picking data from training samples
+      #multip
+      idx = np.random.choice(num_train, batch_size, replace=True)
+      
+      X_batch = X[idx]
+      y_batch = y[idx]
+    
+     
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -201,7 +208,13 @@ class TwoLayerNet(object):
       # using stochastic gradient descent. You'll need to use the gradients   #
       # stored in the grads dictionary defined above.                         #
       #########################################################################
-      pass
+      
+      #update the params of the network with calculated grads
+      self.params['W1'] += -learning_rate*grads['W1']
+      self.params['b1'] += -learning_rate*grads['b1']
+      self.params['W2'] += -learning_rate*grads['W2']
+      self.params['b2'] += -learning_rate*grads['b2']
+    
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -246,7 +259,13 @@ class TwoLayerNet(object):
     ###########################################################################
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
-    pass
+    
+    #go through the fwd pass and get the max score location
+    layer1_score = np.dot(X, self.params['W1']) + self.params['b1']
+    layer2_score = np.dot(layer1_score, self.params['W2']) + self.params['b2']
+    y_pred = np.argmax(layer2_score, axis=1)
+    
+    
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
