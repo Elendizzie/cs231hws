@@ -27,8 +27,8 @@ def affine_forward(x, w, b):
   
   N = x.shape[0]
   x_reshaped = x.reshape(N,-1)  # [2, 120]
-  out = x_reshaped.dot(w) + b  # [2, 3]
 
+  out = x_reshaped.dot(w) + b  # [2, 3]
 
   #############################################################################
   #                             END OF YOUR CODE                              #
