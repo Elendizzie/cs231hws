@@ -106,6 +106,8 @@ class Solver(object):
     self.X_val = data['X_val']
     self.y_val = data['y_val']
     
+    
+    
     # Unpack keyword arguments
     self.update_rule = kwargs.pop('update_rule', 'sgd')
     self.optim_config = kwargs.pop('optim_config', {})
