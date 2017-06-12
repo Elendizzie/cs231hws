@@ -190,15 +190,22 @@ class FullyConnectedNet(object):
     #self.params['W2'] = weight_scale * np.random.randn(hidden_dim, num_classes)
     #self.params['b2'] = np.zeros(num_classes)
     
+    #idx is the number of the layer, hd is the dimension of this layer
     layer_input_dim = input_dim
+    print 'input dimension: ', input_dim
     for idx, hd in enumerate(hidden_dims):
 
         self.params['W%d'%(idx+1)] = weight_scale*np.random.randn(input_dim, hd)
+        print 'weight shape:', self.params['W%d'%(idx+1)].shape
+        
         self.params['b%d'%(idx+1)] = weight_scale*np.zeros(hd)
+        print 'biase shape: ', self.params['b%d'%(idx+1)].shape
         
         if self.use_batchnorm:
             self.params['gamma%d'%(idx+1)] = np.ones(hd)
             self.params['beta%d'%(idx+1)] = np.zeros(hd)
+            print 'gamma shape: ', self.params['gamma%d'%(idx+1)].shape
+            print 'beta shape: ', self.params['beta%d'%(idx+1)].shape
         layer_input_dim = hd
     
     # output layer
@@ -213,9 +220,11 @@ class FullyConnectedNet(object):
     # When using dropout we need to pass a dropout_param dictionary to each
     # dropout layer so that the layer knows the dropout probability and the mode
     # (train / test). You can pass the same dropout_param to each dropout layer.
+    
     self.dropout_param = {}
     if self.use_dropout:
       self.dropout_param = {'mode': 'train', 'p': dropout}
+      print self.dropout_param
       if seed is not None:
         self.dropout_param['seed'] = seed
     
@@ -263,7 +272,20 @@ class FullyConnectedNet(object):
     # self.bn_params[1] to the forward pass for the second batch normalization #
     # layer, etc.                                                              #
     ############################################################################
-    pass
+    
+    layer_input = X
+    
+    for layer in range(0, self.num_layers-1):
+        
+        #{affine - [batch norm] - relu - [dropout]} x (L - 1) - affine - softmax
+        if self.use_batchnorm:
+            #batchnorm_forward()
+            
+    
+    
+    
+    
+    
     ############################################################################
     #                             END OF YOUR CODE                             #
     ############################################################################
